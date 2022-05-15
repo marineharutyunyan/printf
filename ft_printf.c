@@ -2,23 +2,23 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int ft_strlen(char *s)
-{
-	int i;
-
-	i = 0;
-	while(s[i])
-	{
-		i++;
-	}
-
-	return i; 
+int print_char(char c)
+{	
+	return (write (1, &c ,1));
 }
 
-int print_char(char c)
+int * print_unsigned_number(unsigned int n)
 {
-	write (1, &c ,1);
-	return (1);
+	int static	len;
+	if (n == 0)
+		len += print_char('0');
+	else
+	{
+		if(n > 10)
+		print_unsigned_number(n / 10);
+		len += print_char(n % 10  + '0');
+	}
+	return (&len);
 }
 
 int * print_hex(unsigned int num, char type )
@@ -38,7 +38,7 @@ int * print_hex(unsigned int num, char type )
 int print_pointer(uintptr_t ptr){
 	int len;
 	int *templen;
-	
+
 	write(1, "0x" ,2);
 	len = 2;
 	templen = print_hex(ptr, 'x');
@@ -85,6 +85,10 @@ int print_type(va_list args, char format)
 		len += print_char('%');
 	else if (format == 'p')
 		len += print_pointer(va_arg(args, uintptr_t));
+	else if (format == 'u')
+		tempLen = print_unsigned_number(va_arg(args, unsigned int));
+		len += *tempLen;
+		*tempLen = 0;  
 	return (len);
 }
 
@@ -122,11 +126,10 @@ int main ()
 	char *s = "aaaaaa";
 	int a = 10;
 	int *b = &a;
+	char c = 'a';
 	//printf("%p\n",b);
-	//printf("%x\n",b);
-	printf("\n%d \n", ft_printf("%p", b));
-	//printf("\n");
-	printf("\n%d \n", printf("%p", b));
-	//	printf("\n");
+	//int cc = write (1, &c ,1);
+	//ft_printf("%c", c);
+	printf("\n%d \n", ft_printf("%u",20));
 	return (0);
 }
