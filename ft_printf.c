@@ -35,6 +35,18 @@ int * print_hex(unsigned int num, char type )
 	return (&len);
 }
 
+int print_pointer(uintptr_t ptr){
+	int len;
+	int *templen;
+	
+	write(1, "0x" ,2);
+	len = 2;
+	templen = print_hex(ptr, 'x');
+	len += *templen;
+	*templen = 0;
+	return (len);
+}
+
 int	print_string(char *s)
 {
 	int	i;
@@ -71,8 +83,8 @@ int print_type(va_list args, char format)
 	}
 	else if (format == '%')
 		len += print_char('%');
-	//else if (format == 'p')
-		//len += ft_printf_ptr(va_arg(args, uintptr_t));
+	else if (format == 'p')
+		len += print_pointer(va_arg(args, uintptr_t));
 	return (len);
 }
 
@@ -108,9 +120,13 @@ int main ()
 {
 	int num = 1000;
 	char *s = "aaaaaa";
-	printf("\n%d \n", ft_printf("%%", num));
-	printf("\n");
-	printf("\n%d \n", printf("%%", num));
-	printf("\n");
+	int a = 10;
+	int *b = &a;
+	//printf("%p\n",b);
+	//printf("%x\n",b);
+	printf("\n%d \n", ft_printf("%p", b));
+	//printf("\n");
+	printf("\n%d \n", printf("%p", b));
+	//	printf("\n");
 	return (0);
 }
