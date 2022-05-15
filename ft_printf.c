@@ -9,7 +9,7 @@ int print_char(char c)
 
 int * print_unsigned_number(unsigned int n)
 {
-	int static	len;
+	static int	len;
 	if (n == 0)
 		len += print_char('0');
 	else
@@ -21,9 +21,29 @@ int * print_unsigned_number(unsigned int n)
 	return (&len);
 }
 
+size_t	print_number(int n)
+{
+	size_t	len;
+	int		*templen;
+	long	long_num;
+
+	long_num = (long)n;
+	len = 0;
+	if (long_num < 0)
+	{
+		len += print_char('-');
+		long_num *= -1;
+	}
+	templen = print_unsigned_number(long_num);
+	len += *templen;
+	*templen = 0;	
+	return (len);
+}
+
+
 int * print_hex(unsigned int num, char type )
 {
-	static int len;
+	static int	len;
 	char *alpha;
 
 	alpha = "0123456789abcdef";
@@ -75,20 +95,24 @@ int print_type(va_list args, char format)
 		len += print_char(va_arg(args, int));
 	else if (format == 's')
 		len += print_string(va_arg(args, char *));	
+	else if (format == '%')
+		len += print_char('%');
+	else if (format == 'p')
+		len += print_pointer(va_arg(args, uintptr_t));
+	else if (format == 'd' || format == 'i')
+		len += print_number(va_arg(args, int));
+	else if (format == 'u')
+	{
+		tempLen = print_unsigned_number(va_arg(args, unsigned int));
+		len += *tempLen;
+		*tempLen = 0; 
+	}
 	else if (format == 'x' || format == 'X')
 	{
 		tempLen = print_hex(va_arg(args, unsigned int), format);
 		len += *tempLen;
 		*tempLen = 0;  
 	}
-	else if (format == '%')
-		len += print_char('%');
-	else if (format == 'p')
-		len += print_pointer(va_arg(args, uintptr_t));
-	else if (format == 'u')
-		tempLen = print_unsigned_number(va_arg(args, unsigned int));
-		len += *tempLen;
-		*tempLen = 0;  
 	return (len);
 }
 
@@ -130,6 +154,6 @@ int main ()
 	//printf("%p\n",b);
 	//int cc = write (1, &c ,1);
 	//ft_printf("%c", c);
-	printf("\n%d \n", ft_printf("%u",20));
+	printf("\n%d \n", printf("%d",-5457820));
 	return (0);
 }
