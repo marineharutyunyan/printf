@@ -21,7 +21,7 @@ int print_char(char c)
 	return (1);
 }
 
-int print_hex(unsigned int num, char type )
+int * print_hex(unsigned int num, char type )
 {
 	static int len;
 	char *alpha;
@@ -32,7 +32,7 @@ int print_hex(unsigned int num, char type )
 	if(num > 15)
 		print_hex(num / 16, type);
 	len += print_char(alpha[num % 16]);
-	return (len);
+	return (&len);
 }
 
 int	print_string(char *s)
@@ -53,21 +53,26 @@ int	print_string(char *s)
 	return (i);
 }
 
-
 int print_type(va_list args, char format)
 {
 	int len; 
-	
+	int *tempLen;
+
 	len = 0;
 	if (format == 'c')
 		len += print_char(va_arg(args, int));
-	if (format == 's')
+	else if (format == 's')
 		len += print_string(va_arg(args, char *));	
-	if (format == 'x' || format == 'X')
-		len += print_hex(va_arg(args, unsigned int), format);
-
-
-
+	else if (format == 'x' || format == 'X')
+	{
+		tempLen = print_hex(va_arg(args, unsigned int), format);
+		len += *tempLen;
+		*tempLen = 0;  
+	}
+	else if (format == '%')
+		len += print_char('%');
+	//else if (format == 'p')
+		//len += ft_printf_ptr(va_arg(args, uintptr_t));
 	return (len);
 }
 
@@ -103,9 +108,9 @@ int main ()
 {
 	int num = 1000;
 	char *s = "aaaaaa";
-	printf("\n%d \n", ft_printf("%x", num));
+	printf("\n%d \n", ft_printf("%%", num));
 	printf("\n");
-	printf("\n%d \n", printf("%x", num));
+	printf("\n%d \n", printf("%%", num));
 	printf("\n");
 	return (0);
 }
